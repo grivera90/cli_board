@@ -31,6 +31,7 @@
 #define CMD(func, short_name, params, help) {#func, #short_name, cmd_ ## func, params, help}
 #define BUFFER_LEN 512
 static const char *delim = " \n(,);";
+static const char *vboard_str = "vboard";
 static char buffer[BUFFER_LEN] = { 0 };
 /******************************************************************************
     Data types
@@ -49,12 +50,12 @@ typedef struct
 ******************************************************************************/
 static cmd_t cmd_table[CMD_MAX] = 
 {
-    {"set_instance", "-i", NULL, 3, "Set a instance of an ECU. vnode -i <type>,<identity>,<instance>.\n\t\ta) vnode -i 10,200,0.\n\t\tb) vnode -i 10,0:5,2:7."},
-    {"diag_spn", "-d", NULL, 4, "Send a spn at set period. vnode -d <da>,<spn>,<period>,<-e/-d>.\n\t\ta) vnode -d 22,2838,200,-e (da = 22, spn = 2838, period = 200, enable)."},
-    {"force_spn", "-f", NULL, 4, "Force a spn value. vnode -f <da>,<spn>,<value>,<-e/-d>.\n\t\ta) vnode -f 22,2838,xxxx,-e (da = 22, spn = 2838, value = xxxx, enable)."},
-    {"set_own_spn", "-s", NULL, 3, "Set own spn value. vnode -s <spn>,<spn_value>,<value_type>.\n\t\ta) vnode -s 520198,1200,-lld. For integers values.\n\t\tb) vnode -s 520198,126.55,-f. For float values.\n\t\tc) vnode -s 520198,-735.28,-lf. For double values.\n\t\td) vnode -s 520198,654090,-r. For raw values."},
-    {"fw_upgrade", "-fw", NULL, 2, "Upgrade the firmware of a specific ecu/node. vnode -fw </path_to_fw/binary.bin> <address>."},
-    {"fw_upgrade_force", "-fwf", NULL, 2, "Upgrade the firmware of a specific ecu/node without version check. vnode -fw </path_to_fw/binary.bin> <address>."},
+    {"set_instance", "-i", NULL, 3, "Set a instance of an ECU. vboard -i <type>,<identity>,<instance>.\n\t\ta) vboard -i 10,200,0.\n\t\tb) vboard -i 10,0:5,2:7."},
+    {"diag_spn", "-d", NULL, 4, "Send a spn at set period. vboard -d <da>,<spn>,<period>,<-e/-d>.\n\t\ta) vboard -d 22,2838,200,-e (da = 22, spn = 2838, period = 200, enable)."},
+    {"force_spn", "-f", NULL, 4, "Force a spn value. vboard -f <da>,<spn>,<value>,<-e/-d>.\n\t\ta) vboard -f 22,2838,xxxx,-e (da = 22, spn = 2838, value = xxxx, enable)."},
+    {"set_own_spn", "-s", NULL, 3, "Set own spn value. vboard -s <spn>,<spn_value>,<value_type>.\n\t\ta) vboard -s 520198,1200,-lld. For integers values.\n\t\tb) vboard -s 520198,126.55,-f. For float values.\n\t\tc) vboard -s 520198,-735.28,-lf. For double values.\n\t\td) vboard -s 520198,654090,-r. For raw values."},
+    {"fw_upgrade", "-fw", NULL, 2, "Upgrade the firmware of a specific ecu/node. vboard -fw </path_to_fw/binary.bin> <address>."},
+    {"fw_upgrade_force", "-fwf", NULL, 2, "Upgrade the firmware of a specific ecu/node without version check. vboard -fw </path_to_fw/binary.bin> <address>."},
     {"fw_upgrade_abort", "-fwa", NULL, 0, "Upgrade firmware abort."},
     {"help", "-h", NULL, 0, "Display this help."}
 };
@@ -179,7 +180,7 @@ void cli_parse(char *cmd)
         return;
     }
 
-    if(!strcmp(tok, "vnode"))
+    if(!strcmp(tok, vboard_str))
     {
         tok = strtok(NULL, delim);
         while(i--) 
